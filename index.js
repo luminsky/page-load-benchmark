@@ -29,8 +29,10 @@ const updateOut = (result, { res, err }, requestNo, requestStart) => {
       (result.errored + 1)
     );
 
-    if (!result.first_error_request_no || result.first_error_request_no > requestNo) {
-      result.first_error_request_no = requestNo;
+    result.errors[err.message] = (result.errors[err.message] || 0) + 1;
+
+    if (!result.first_failed_request_no || result.first_failed_request_no > requestNo) {
+      result.first_failed_request_no = requestNo;
     }
   }
 
@@ -69,7 +71,8 @@ const writeOut = (outObj, start) => {
     successful: 0,
     errored: 0,
 
-    first_error_request_no: null,
+    errors: {},
+    first_failed_request_no: null,
 
     average_response_time: 0,
     average_time_before_success: 0,
